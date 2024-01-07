@@ -9,8 +9,5 @@ vim.keymap.set("n", "C-j", "cnext<CR")
 vim.keymap.set("n", "C-k", "cprev<CR")
 
 -- copy and paste to clipboard
-vim.keymap.set("n", "<leader>y", [["+y]]) 
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
-
-
-

@@ -51,9 +51,6 @@ return require('packer').startup(function(use)
             ts_update()
         end, }
 
-    use("tpope/vim-fugitive")
-    use("hashivim/vim-terraform")
-
     use {
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v1.x',
@@ -76,4 +73,9 @@ return require('packer').startup(function(use)
             { 'rafamadriz/friendly-snippets' },
         }
     }
+
+
+    use("tpope/vim-fugitive")
+    use("hashivim/vim-terraform")
+    use("tpope/vim-commentary") -- gc, gcc line, gcap para
 end)
