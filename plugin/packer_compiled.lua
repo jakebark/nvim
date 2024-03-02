@@ -187,6 +187,11 @@ _G.packer_plugins = {
     path = "/Users/jake/.local/share/nvim/site/pack/packer/start/vim-fugitive",
     url = "https://github.com/tpope/vim-fugitive"
   },
+  ["vim-markdown"] = {
+    loaded = true,
+    path = "/Users/jake/.local/share/nvim/site/pack/packer/start/vim-markdown",
+    url = "https://github.com/tpope/vim-markdown"
+  },
   ["vim-surround"] = {
     loaded = true,
     path = "/Users/jake/.local/share/nvim/site/pack/packer/start/vim-surround",
