@@ -78,4 +78,16 @@ return require('packer').startup(function(use)
     use("tpope/vim-fugitive")
     use("hashivim/vim-terraform")
     use("tpope/vim-commentary") -- gc, gcc line, gcap para
+    use("tpope/vim-surround")   -- S", cs'"
+    use("mbbill/undotree")
+
+    use({
+        "iamcco/markdown-preview.nvim",
+        run = "cd app && npm install",
+        setup = function()
+            vim.g.mkdp_filetypes = {
+                "markdown" }
+        end,
+        ft = { "markdown" },
+    })
 end)
