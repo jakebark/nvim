@@ -10,7 +10,7 @@ end, { desc = 'config > nvim' })
 
 -- find files in notes
 vim.keymap.set('n', '<leader>mn', function()
-    builtin.find_files { cwd = "./notes" }
+    builtin.find_files { cwd = "~/notes" }
 end, { desc = 'my notes' })
 
 -- find files in notes
