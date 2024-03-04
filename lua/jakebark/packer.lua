@@ -79,7 +79,6 @@ return require('packer').startup(function(use)
     use("tpope/vim-fugitive")
     use("tpope/vim-commentary") -- gc, gcc line, gcap para
     use("tpope/vim-surround")   -- S", cs'"
-    use("tpope/vim-markdown")
     use("mbbill/undotree")
 
     use({
