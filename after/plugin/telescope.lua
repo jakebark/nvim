@@ -13,7 +13,7 @@ vim.keymap.set('n', '<leader>mn', function()
     builtin.find_files { cwd = "~/notes" }
 end, { desc = 'my notes' })
 
--- find files in notes
+-- search buffer
 vim.keymap.set('n', '<leader>/', function()
     builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
         winblend = 10,
