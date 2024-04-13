@@ -115,6 +115,11 @@ _G.packer_plugins = {
     path = "/Users/jake/.local/share/nvim/site/pack/packer/start/friendly-snippets",
     url = "https://github.com/rafamadriz/friendly-snippets"
   },
+  ["hardtime.nvim"] = {
+    loaded = true,
+    path = "/Users/jake/.local/share/nvim/site/pack/packer/start/hardtime.nvim",
+    url = "https://github.com/m4xshen/hardtime.nvim"
+  },
   harpoon = {
     loaded = true,
     path = "/Users/jake/.local/share/nvim/site/pack/packer/start/harpoon",
@@ -141,6 +146,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/jake/.local/share/nvim/site/pack/packer/start/mason.nvim",
     url = "https://github.com/williamboman/mason.nvim"
+  },
+  ["nui.nvim"] = {
+    loaded = true,
+    path = "/Users/jake/.local/share/nvim/site/pack/packer/start/nui.nvim",
+    url = "https://github.com/MunifTanjim/nui.nvim"
   },
   ["nvim-cmp"] = {
     loaded = true,
