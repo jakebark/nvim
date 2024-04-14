@@ -2,10 +2,15 @@ local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
 
--- htts://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#configurations
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 lsp.ensure_installed({
     'rust_analyzer',
     'terraformls',
+    'jsonls',
+    'yamlls',
+    'lua_ls',
+    'pylsp',
+    'tsserver',
 })
 
 -- Fix Undefined global 'vim'
