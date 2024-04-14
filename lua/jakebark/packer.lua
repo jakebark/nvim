@@ -90,9 +90,4 @@ return require('packer').startup(function(use)
         end,
         ft = { "markdown" },
     })
-
-    use {
-        "m4xshen/hardtime.nvim",
-        requires = { { "MunifTanjim/nui.nvim", "nvim-lua/plenary.nvim" } }
-    }
 end)
