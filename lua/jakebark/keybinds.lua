@@ -18,3 +18,8 @@ vim.keymap.set("n", "<leader>Y", [["+Y]])
 -- grep
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
+
+-- git
+vim.keymap.set("n", "<leader>ga", ":!Git add .<CR>")
+vim.keymap.set("n", "<leader>gc", ":!Git commit -m ")
+vim.keymap.set("n", "<leader>gp", ":!Git push<CR>")
