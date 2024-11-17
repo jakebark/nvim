@@ -8,6 +8,7 @@ vim.keymap.set("n", "<leader>mn", ":e ~/notes/<CR>")
 
 vim.keymap.set("n", "<leader>gf", ":GFiles<CR>")
 vim.keymap.set("n", "<leader>ff", ":Files<CR>")
+vim.keymap.set("n", "<leader>pf", ":Vex<CR>:Files<CR>")
 vim.keymap.set("n", "C-j", "cnext<CR")
 vim.keymap.set("n", "C-k", "cprev<CR")
 
