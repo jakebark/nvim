@@ -10,7 +10,6 @@ lsp.ensure_installed({
     'yamlls',
     'lua_ls',
     'pylsp',
-    'tsserver',
     'gopls',
 })
 
