@@ -10,7 +10,7 @@ local ensure_packer = function()
     return false
 end
 
--- first time startup?
+-- first time startup
 local packer_bootstrap = ensure_packer()
 
 -- reload neovim whenever you save the packer.lua file
@@ -73,7 +73,6 @@ return require('packer').startup(function(use)
             { 'rafamadriz/friendly-snippets' },
         }
     }
-
 
     use("hashivim/vim-terraform")
     use("tpope/vim-fugitive")
