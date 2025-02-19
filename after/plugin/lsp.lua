@@ -1,10 +1,8 @@
 local lsp = require("lsp-zero")
 
 lsp.preset("recommended")
-lsp.setup()
-lsp.nvim_workspace() -- Fix Undefined global 'vim'
 
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/configs.md
+-- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
 lsp.ensure_installed({
     'dockerls',
     'gopls',
@@ -17,15 +15,8 @@ lsp.ensure_installed({
     'yamlls',
 })
 
-lsp.set_preferences({
-    suggest_lsp_servers = false,
-    sign_icons = {
-        error = 'E',
-        warn = 'W',
-        hint = 'H',
-        info = 'I'
-    }
-})
+-- Fix Undefined global 'vim'
+lsp.nvim_workspace()
 
 -- change autocomplete binds
 local cmp = require('cmp')
@@ -37,13 +28,26 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
     ["<C-Space>"] = cmp.mapping.complete(),
 })
 
-cmp_mappings['<CR>'] = nil --rm enter autocomplete
+-- rm autocomplete binds
+cmp_mappings['<CR>'] = nil
 -- cmp_mappings['<Tab>'] = nil
 -- cmp_mappings['<S-Tab>'] = nil
 
 lsp.setup_nvim_cmp({
     mapping = cmp_mappings
 })
+
+lsp.set_preferences({
+    suggest_lsp_servers = false,
+    sign_icons = {
+        error = 'E',
+        warn = 'W',
+        hint = 'H',
+        info = 'I'
+    }
+})
+
+lsp.setup()
 
 vim.diagnostic.config({
     virtual_text = true
