@@ -8,6 +8,8 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 vim.opt.scrolloff = 8
 
+vim.opt.swapfile = false
+
 
 local augroup = vim.api.nvim_create_augroup
 

@@ -79,6 +79,7 @@ return require('packer').startup(function(use)
     use("tpope/vim-commentary") -- gc, gcc line, gcap para
     use("tpope/vim-surround")   -- S", cs'"
     use("mbbill/undotree")
+    use("jakebark/notes.nvim")
 
     use({
         "iamcco/markdown-preview.nvim",
