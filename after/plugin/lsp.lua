@@ -1,60 +1,139 @@
-local lsp = require("lsp-zero")
+local servers = {
+    lua_ls = {
+        filetypes = { "lua" },
+        cmd = { "lua-language-server" },
+        settings = {
+            Lua = {
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true),
+                    checkThirdParty = false,
+                },
+                telemetry = { enable = false },
+            }
+        }
+    },
+    gopls = {
+        filetypes = { "go" },
+        cmd = { "gopls" }
+    },
+    pylsp = {
+        filetypes = { "python" },
+        cmd = { "pylsp" }
+    },
+    rust_analyzer = {
+        filetypes = { "rust" },
+        cmd = { "rust-analyzer" }
+    },
+    terraformls = {
+        filetypes = { "terraform" },
+        cmd = { "terraform-ls", "serve" }
+    },
+    jsonls = {
+        filetypes = { "json" },
+        cmd = { "vscode-json-language-server", "--stdio" }
+    },
+    yamlls = {
+        filetypes = { "yaml" },
+        cmd = { "yaml-language-server", "--stdio" }
+    },
+    dockerls = {
+        filetypes = { "dockerfile" },
+        cmd = { "docker-langserver", "--stdio" }
+    },
+    vimls = {
+        filetypes = { "vim" },
+        cmd = { "vim-language-server", "--stdio" }
+    }
+}
 
-lsp.preset("recommended")
+local server_names = vim.tbl_keys(servers) -- {"lua_ls", "gopls", "jsonls"}
+local all_filetypes = {}                   -- {"lua", "go", "json"}
+for _, config in pairs(servers) do
+    vim.list_extend(all_filetypes, config.filetypes)
+end
 
--- https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-lsp.ensure_installed({
-    'dockerls',
-    'gopls',
-    'jsonls',
-    'lua_ls',
-    'pylsp',
-    'rust_analyzer',
-    'terraformls',
-    'vimls',
-    'yamlls',
+
+require("mason").setup()
+require("mason-lspconfig").setup({
+    ensure_installed = server_names
 })
 
--- Fix Undefined global 'vim'
-lsp.nvim_workspace()
+local capabilities = require('cmp_nvim_lsp').default_capabilities() -- enhance default LSP with autocomplete (hrsh7th/cmp-nvim-lsp)
 
--- change autocomplete binds
-local cmp = require('cmp')
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
-local cmp_mappings = lsp.defaults.cmp_mappings({
-    ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-    ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-    ["<C-Space>"] = cmp.mapping.complete(),
+local on_attach = function(client, bufnr)
+    -- auto-format on save
+    if client.supports_method("textDocument/formatting") then
+        vim.api.nvim_create_autocmd("BufWritePre", {
+            buffer = bufnr,
+            callback = function()
+                vim.lsp.buf.format({ bufnr = bufnr })
+            end,
+        })
+    end
+end
+
+
+local filetype_to_server = {} -- ["lua"] = "lua_ls"
+for server_name, config in pairs(servers) do
+    for _, filetype in ipairs(config.filetypes) do
+        filetype_to_server[filetype] = server_name
+    end
+end
+-- start lsp when file type is opened
+-- create lookup for lsp, rather than search
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = all_filetypes,
+    callback = function()
+        local ft = vim.bo.filetype                 -- "lua"
+        local server_name = filetype_to_server[ft] -- "lua_ls"
+        local config = servers[server_name]        -- gets the full config
+
+        if config then
+            vim.lsp.start({
+                name = server_name,
+                cmd = config.cmd,
+                root_dir = vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true })[1]),
+                capabilities = capabilities,
+                on_attach = on_attach,
+                settings = config.settings,
+            })
+        end
+    end,
 })
-
--- rm autocomplete binds
-cmp_mappings['<CR>'] = nil
--- cmp_mappings['<Tab>'] = nil
--- cmp_mappings['<S-Tab>'] = nil
-
-lsp.setup_nvim_cmp({
-    mapping = cmp_mappings
-})
-
-lsp.set_preferences({
-    suggest_lsp_servers = false,
-    sign_icons = {
-        error = 'E',
-        warn = 'W',
-        hint = 'H',
-        info = 'I'
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = {
+        text = {
+            [vim.diagnostic.severity.ERROR] = 'E',
+            [vim.diagnostic.severity.WARN] = 'W',
+            [vim.diagnostic.severity.HINT] = 'H',
+            [vim.diagnostic.severity.INFO] = 'I',
+        }
     }
 })
 
-lsp.setup()
-
-vim.diagnostic.config({
-    virtual_text = true
+local cmp = require('cmp') -- configure hrsh7th/nvim-cmp for autocomplete, use L3MON4D3/LuaSnip for expanding snippets
+cmp.setup({
+    snippet = {
+        expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+        end,
+    },
+    mapping = cmp.mapping.preset.insert({
+        ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
+        ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+        ['<C-Space>'] = cmp.mapping.complete(),
+    }),
+    -- completion sources in priority order
+    sources = cmp.config.sources({
+        -- primary
+        { name = 'nvim_lsp' }, -- lsp completions
+        -- { name = 'nvim_lua' }, -- lua API completion
+        { name = 'luasnip' },  -- snippet completions
+    }, {
+        -- secondary
+        { name = 'buffer' }, -- buffer text completions
+        { name = 'path' },   -- file path completions
+    })
 })
-
--- format on save
-lsp.on_attach(function(client, bufnr)
-    lsp.default_keymaps({ buffer = bufnr })
-    lsp.buffer_autoformat()
-end)
