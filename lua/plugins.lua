@@ -24,13 +24,13 @@ vim.cmd([[
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
 
-    use({
-        'morhetz/gruvbox',
-        as = 'dark',
-        config = function()
-            vim.cmd('colorscheme gruvbox')
-        end
-    })
+    use 'morhetz/gruvbox'
+    use("hashivim/vim-terraform")
+    use("tpope/vim-fugitive")
+    use("tpope/vim-commentary") -- gc, gcc line, gcap para
+    use("tpope/vim-surround")   -- S", cs'"
+    use("mbbill/undotree")
+    use("jakebark/notes.nvim")
 
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.4',
@@ -57,7 +57,6 @@ return require('packer').startup(function(use)
         }
     }
 
-    -- autocompletion
     use {
         'hrsh7th/nvim-cmp',
         requires = {
@@ -71,20 +70,9 @@ return require('packer').startup(function(use)
         }
     }
 
-    use("hashivim/vim-terraform")
-    use("tpope/vim-fugitive")
-    use("tpope/vim-commentary") -- gc, gcc line, gcap para
-    use("tpope/vim-surround")   -- S", cs'"
-    use("mbbill/undotree")
-    use("jakebark/notes.nvim")
-
     use({
         "iamcco/markdown-preview.nvim",
         run = "cd app && npm install",
-        setup = function()
-            vim.g.mkdp_filetypes = {
-                "markdown" }
-        end,
         ft = { "markdown" },
     })
 end)
