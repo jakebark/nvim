@@ -1,3 +1,3 @@
-require("jakebark.keybinds")
-require("jakebark.settings")
-require("jakebark.packer")
+require("keybinds")
+require("settings")
+require("plugins")
