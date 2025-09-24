@@ -1,16 +1,61 @@
+local servers = {
+    lua_ls = {
+        filetypes = { "lua" },
+        cmd = { "lua-language-server" },
+        settings = {
+            Lua = {
+                workspace = {
+                    library = vim.api.nvim_get_runtime_file("", true),
+                    checkThirdParty = false,
+                },
+                telemetry = { enable = false },
+            }
+        }
+    },
+    gopls = {
+        filetypes = { "go" },
+        cmd = { "gopls" }
+    },
+    pylsp = {
+        filetypes = { "python" },
+        cmd = { "pylsp" }
+    },
+    rust_analyzer = {
+        filetypes = { "rust" },
+        cmd = { "rust-analyzer" }
+    },
+    terraformls = {
+        filetypes = { "terraform" },
+        cmd = { "terraform-ls", "serve" }
+    },
+    jsonls = {
+        filetypes = { "json" },
+        cmd = { "vscode-json-language-server", "--stdio" }
+    },
+    yamlls = {
+        filetypes = { "yaml" },
+        cmd = { "yaml-language-server", "--stdio" }
+    },
+    dockerls = {
+        filetypes = { "dockerfile" },
+        cmd = { "docker-langserver", "--stdio" }
+    },
+    vimls = {
+        filetypes = { "vim" },
+        cmd = { "vim-language-server", "--stdio" }
+    }
+}
+
+local server_names = vim.tbl_keys(servers) -- {"lua_ls", "gopls", "jsonls"}
+local all_filetypes = {}                   -- {"lua", "go", "json"}
+for _, config in pairs(servers) do
+    vim.list_extend(all_filetypes, config.filetypes)
+end
+
+
 require("mason").setup()
 require("mason-lspconfig").setup({
-    ensure_installed = {
-        'dockerls',
-        'gopls',
-        'jsonls',
-        'lua_ls',
-        'pylsp',
-        'rust_analyzer',
-        'terraformls',
-        'vimls',
-        'yamlls',
-    }
+    ensure_installed = server_names
 })
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities() -- enhance default LSP with autocomplete (hrsh7th/cmp-nvim-lsp)
@@ -27,41 +72,25 @@ local on_attach = function(client, bufnr)
     end
 end
 
--- start lsp when file type is opened
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "lua", "go", "python", "rust", "terraform", "json", "yaml", "dockerfile", "vim" },
-    callback = function()
-        local server_configs = {
-            lua = {
-                name = "lua_ls",
-                cmd = { "lua-language-server" },
-                settings = {
-                    Lua = {
-                        workspace = {
-                            library = vim.api.nvim_get_runtime_file("", true),
-                            checkThirdParty = false,
-                        },
-                        telemetry = { enable = false },
-                    }
-                }
-            },
-            go = { name = "gopls", cmd = { "gopls" } },
-            python = { name = "pylsp", cmd = { "pylsp" } },
-            rust = { name = "rust_analyzer", cmd = { "rust-analyzer" } },
-            terraform = { name = "terraformls", cmd = { "terraform-ls", "serve" } },
-            json = { name = "jsonls", cmd = { "vscode-json-language-server", "--stdio" } },
-            yaml = { name = "yamlls", cmd = { "yaml-language-server", "--stdio" } },
-            dockerfile = { name = "dockerls", cmd = { "docker-langserver", "--stdio" } },
-            vim = { name = "vimls", cmd = { "vim-language-server", "--stdio" } }
-        }
 
-        -- get buffer filetype, look up and start corresponding lsp server
-        local ft = vim.bo.filetype
-        local config = server_configs[ft]
+local filetype_to_server = {} -- ["lua"] = "lua_ls"
+for server_name, config in pairs(servers) do
+    for _, filetype in ipairs(config.filetypes) do
+        filetype_to_server[filetype] = server_name
+    end
+end
+-- start lsp when file type is opened
+-- create lookup for lsp, rather than search
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = all_filetypes,
+    callback = function()
+        local ft = vim.bo.filetype                 -- "lua"
+        local server_name = filetype_to_server[ft] -- "lua_ls"
+        local config = servers[server_name]        -- gets the full config
 
         if config then
             vim.lsp.start({
-                name = config.name,
+                name = server_name,
                 cmd = config.cmd,
                 root_dir = vim.fs.dirname(vim.fs.find({ '.git' }, { upward = true })[1]),
                 capabilities = capabilities,
@@ -71,7 +100,6 @@ vim.api.nvim_create_autocmd("FileType", {
         end
     end,
 })
-
 vim.diagnostic.config({
     virtual_text = true,
     signs = {
@@ -85,7 +113,6 @@ vim.diagnostic.config({
 })
 
 local cmp = require('cmp') -- configure hrsh7th/nvim-cmp for autocomplete, use L3MON4D3/LuaSnip for expanding snippets
-
 cmp.setup({
     snippet = {
         expand = function(args)
@@ -110,4 +137,3 @@ cmp.setup({
         { name = 'path' },   -- file path completions
     })
 })
-
