@@ -1,4 +1,4 @@
--- install packer if not installed on this machinepackep.
+-- install packer if not installed
 local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
@@ -16,7 +16,7 @@ local packer_bootstrap = ensure_packer()
 -- reload neovim whenever you save the packer.lua file
 vim.cmd([[
   augroup packer_user_config
-  :: autocmd!
+  autocmd!
     autocmd BufWritePost packer.lua source <afile> | PackerSync
   augroup end
 ]])
@@ -52,25 +52,23 @@ return require('packer').startup(function(use)
         end, }
 
     use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v1.x',
+        'williamboman/mason.nvim',
         requires = {
-            -- LSP Support
-            { 'neovim/nvim-lspconfig' },
-            { 'williamboman/mason.nvim' },
             { 'williamboman/mason-lspconfig.nvim' },
+        }
+    }
 
-            -- Autocompletion
-            { 'hrsh7th/nvim-cmp' },
-            { 'hrsh7th/cmp-buffer' },
-            { 'hrsh7th/cmp-path' },
-            { 'saadparwaiz1/cmp_luasnip' },
-            { 'hrsh7th/cmp-nvim-lsp' },
-            { 'hrsh7th/cmp-nvim-lua' },
-
-            -- Snippets
-            { 'L3MON4D3/LuaSnip' },
-            { 'rafamadriz/friendly-snippets' },
+    -- autocompletion
+    use {
+        'hrsh7th/nvim-cmp',
+        requires = {
+            { 'hrsh7th/cmp-buffer' },           -- buffer text completions
+            { 'hrsh7th/cmp-path' },             -- file paths completions
+            { 'saadparwaiz1/cmp_luasnip' },     -- snippet completions
+            { 'hrsh7th/cmp-nvim-lsp' },         -- lsp completions
+            { 'hrsh7th/cmp-nvim-lua' },         -- lua API completion
+            { 'L3MON4D3/LuaSnip' },             -- snippet completions
+            { 'rafamadriz/friendly-snippets' }, -- prefined snippets, used by luasnip
         }
     }
 
