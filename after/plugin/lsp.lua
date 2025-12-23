@@ -30,7 +30,7 @@ local servers = {
     },
     jsonls = {
         filetypes = { "json" },
-        cmd = { "vscode-json-language-server", "--stdio" }
+        cmd = { "json-languageserver", "--stdio" }
     },
     yamlls = {
         filetypes = { "yaml" },
@@ -122,6 +122,8 @@ cmp.setup({
     mapping = cmp.mapping.preset.insert({
         ['<C-p>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
         ['<C-n>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+        ['<Tab>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }),
         ['<C-y>'] = cmp.mapping.confirm({ select = true }),
         ['<C-Space>'] = cmp.mapping.complete(),
     }),
