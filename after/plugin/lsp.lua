@@ -83,6 +83,7 @@ end
 -- create lookup for lsp, rather than search
 vim.api.nvim_create_autocmd("FileType", {
     pattern = all_filetypes,
+
     callback = function()
         local ft = vim.bo.filetype                 -- "lua"
         local server_name = filetype_to_server[ft] -- "lua_ls"
@@ -110,6 +111,14 @@ vim.diagnostic.config({
             [vim.diagnostic.severity.INFO] = 'I',
         }
     }
+})
+
+-- JSON formatting with jq
+vim.api.nvim_create_autocmd("BufWritePre", {
+    pattern = "*.json",
+    callback = function()
+        vim.cmd(":%!jq .")
+    end,
 })
 
 local cmp = require('cmp') -- configure hrsh7th/nvim-cmp for autocomplete, use L3MON4D3/LuaSnip for expanding snippets
