@@ -30,7 +30,7 @@ local servers = {
     },
     jsonls = {
         filetypes = { "json" },
-        cmd = { "json-languageserver", "--stdio" }
+        cmd = { "vscode-json-languageserver", "--stdio" }
     },
     yamlls = {
         filetypes = { "yaml" },
