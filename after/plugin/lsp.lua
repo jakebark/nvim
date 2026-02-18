@@ -84,10 +84,6 @@ end
 vim.api.nvim_create_autocmd("FileType", {
     pattern = all_filetypes,
     callback = function()
-        -- if vim.fn.expand('%:e') == 'tfvars' then
-        --     return
-        -- end
-
         local ft = vim.bo.filetype                 -- "lua"
         local server_name = filetype_to_server[ft] -- "lua_ls"
         local config = servers[server_name]        -- gets the full config
